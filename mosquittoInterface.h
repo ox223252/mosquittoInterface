@@ -25,4 +25,6 @@ int bigBoyMQTT_init ( const MQTT_init_t s, struct mosquitto ** mosq, void (*fnc)
 int bigBoyMQTT_stop ( struct mosquitto ** mosq );
 int bigBoyMQTT_sender ( struct mosquitto * mosq, const char* topic, uint8_t * stop, void * data, char *callback( void* arg ), uint32_t time );
 
+extern int mosquitto_subscribe(struct mosquitto *mosq,int *mid,const char *sub,int qos );
+
 #endif
