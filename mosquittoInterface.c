@@ -103,7 +103,12 @@ int bigBoyMQTT_init ( const MQTT_init_t s, struct mosquitto ** mosq, void (*fnc)
 			rt = __LINE__;
 			goto lClean;
 		}
-		setFreeOnExit ( init );
+		if ( setFreeOnExit ( init ) )
+		{
+			rt = __LINE__;
+			free ( init );
+			goto lClean;
+		}
 		init->on_message = fnc;
 		init->arg = arg;
 	}
@@ -116,6 +121,8 @@ int bigBoyMQTT_init ( const MQTT_init_t s, struct mosquitto ** mosq, void (*fnc)
 	{
 		*mosq = mosquitto_new ( "bigBoy", true, init );
 	}
+	
+	*mosq = mosquitto_new ( NULL, true, NULL);
 
 	if ( !*mosq )
 	{
@@ -149,7 +156,7 @@ int bigBoyMQTT_init ( const MQTT_init_t s, struct mosquitto ** mosq, void (*fnc)
 		goto lDestroy;
 	}
 
-	if ( mosquitto_connect ( *mosq, s.host, s.port, 1000000 ) )
+	if ( mosquitto_connect ( *mosq, s.host, s.port, 60 ) )
 	{
 		rt = __LINE__;
 		goto lDestroy;
@@ -158,11 +165,13 @@ int bigBoyMQTT_init ( const MQTT_init_t s, struct mosquitto ** mosq, void (*fnc)
 	if ( mosquitto_loop_start ( *mosq ) )
 	{
 		rt = __LINE__;
-		goto lDestroy;
+		goto lDisconnect;
 	}
 
 	return ( 0 );
 
+lDisconnect:
+	mosquitto_disconnect ( *mosq );
 lDestroy:
 	mosquitto_destroy ( *mosq );
 lClean:
@@ -179,6 +188,7 @@ int bigBoyMQTT_stop ( struct mosquitto ** mosq )
 		return (  0 );
 	}
 
+	mosquitto_disconnect ( *mosq );
 	mosquitto_loop_stop ( *mosq, true );
 	mosquitto_destroy ( *mosq );
 	*mosq = NULL;
