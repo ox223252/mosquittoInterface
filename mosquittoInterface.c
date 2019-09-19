@@ -1,3 +1,31 @@
+////////////////////////////////////////////////////////////////////////////////
+/// \copiright ox223252, 2018
+///
+/// This program is free software: you can redistribute it and/or modify it
+///     under the terms of the GNU General Public License published by the Free
+///     Software Foundation, either version 2 of the License, or (at your
+///     option) any later version.
+///
+/// This program is distributed in the hope that it will be useful, but WITHOUT
+///     ANY WARRANTY; without even the implied of MERCHANTABILITY or FITNESS FOR
+///     A PARTICULAR PURPOSE. See the GNU General Public License for more
+///     details.
+///
+/// You should have received a copy of the GNU General Public License along with
+///     this program. If not, see <http://www.gnu.org/licenses/>
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+/// \file mosquittoInterface.h
+/// \brief library created to add interface to simplify mosquitto 
+/// \author ox223252
+/// \date 2019-09
+/// \copyright GPLv2
+/// \version 0.1
+/// \warning NONE
+/// \bug NONE
+////////////////////////////////////////////////////////////////////////////////
+
 #include "mosquittoInterface.h"
 #include <pthread.h>
 
