@@ -1,0 +1,62 @@
+@ after INIT_FUNCTION
+void  onMessage ( char *topic, char * msg, void * data )
+{
+	printf ( "topic : %s\\n", topic );
+	printf ( "message : %s\\n", msg );
+}
+
+void stopOnEnd ( void * arg )
+{
+	bigBoyMQTT_stop ( (struct mosquitto **)arg );
+}
+
+char * callback ( void * arg )
+{
+	static char str[32];
+	sprintf ( str, "test %d\\r", (*((uint8_t*)arg))++ );
+	return ( str );
+}
+
+@ after INIT_VAR
+	MQTT_init_t mqttInitStruct = {
+		.name = "name",
+		.host="127.0.0.1",
+		.port=1883,
+		.ca = NULL,
+		.cert = NULL,
+		.key = NULL,
+		.lastName = "/status",
+		.lastMsg = "diconnected"
+	};
+@ afetr END_LOG END_CONFIG
+	// INIT_MQTT
+	struct mosquitto *mosq = NULL;
+	uint8_t timer = 0;
+	uint8_t stop = 0;
+	if ( bigBoyMQTT_init ( mqttInitStruct, &mosq, onMessage, NULL ) )
+	{
+		logVerbose ( "error %s\\n", strerror ( errno ) );
+		return ( __LINE__ );
+	}
+	#ifdef __FREEONEXIT_H__
+		else if ( setExecBeforeAllOnExit ( stopOnEnd, &mosq ) )
+		{
+			logVerbose ( "error %s\\n", strerror ( errno ) );
+			bigBoyMQTT_stop ( &mosq );
+			return ( __LINE__ );
+		}
+	#endif
+	else
+	{
+		static uint8_t timer = 0;
+		mosquitto_subscribe ( mosq, NULL, "/topic", 0 );
+		bigBoyMQTT_sender ( mosq, "/topic", &stop, &timer, callback, 1000 );
+	}
+	// END_MQTT
+
+@ after END_PROGRAM
+	// RELEASE_MQTT
+	#ifdef __FREEONEXIT_H__
+		unsetExecBeforeAllOnExit ( stopOnEnd );
+	#endif
+	stopOnEnd ( &mosq );
