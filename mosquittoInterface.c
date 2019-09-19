@@ -200,7 +200,8 @@ int bigBoyMQTT_stop ( struct mosquitto ** mosq )
 static void * bigBoyMQTT_senderSubRoutine ( void * arg )
 {
 	_bigBoy_sender_t *s = arg;
-	while ( !*s->stop )
+	while ( !*s->stop && 
+		s->mosq )
 	{
 		if ( ackDone )
 		{
