@@ -24,11 +24,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file mosquittoInterface.h
-/// \brief library created to add interface to simplify mosquitto 
+/// \brief library created to add interface to simplify mosquitto
 /// \author ox223252
 /// \date 2019-09
 /// \copyright GPLv2
-/// \version 0.1
+/// \version 0.2
 /// \warning NONE
 /// \bug NONE
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ typedef struct
 	char * cert; ///< certificat file
 	char * key; ///< key file
 
-	char * lastName; ///< topic name were the disconnection message wille be 
+	char * lastName; ///< topic name were the disconnection message wille be
 	    ///< sent
 	char * lastMsg; ///< last massage sent on disconnection
 }

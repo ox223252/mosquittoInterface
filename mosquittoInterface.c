@@ -125,6 +125,7 @@ int bigBoyMQTT_init ( const MQTT_init_t s, struct mosquitto ** mosq, void (*fnc)
 	_bigBoy_init_t *init = NULL;
 	if ( fnc )
 	{
+		initFreeOnExit ( );
 		init = malloc ( sizeof ( *init ) );
 		if ( !init )
 		{
@@ -150,14 +151,11 @@ int bigBoyMQTT_init ( const MQTT_init_t s, struct mosquitto ** mosq, void (*fnc)
 		*mosq = mosquitto_new ( "bigBoy", true, init );
 	}
 	
-	*mosq = mosquitto_new ( NULL, true, NULL);
-
 	if ( !*mosq )
 	{
 		rt = __LINE__;
 		goto lClean;
 	}
-
 
 	mosquitto_connect_callback_set ( *mosq, connectCallback );
 	mosquitto_disconnect_callback_set ( *mosq, disconnectCallback );
